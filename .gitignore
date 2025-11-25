@@ -11,3 +11,4 @@ push
 *.iml
 .cache
 .cpcache
+cljs-test-runner-out

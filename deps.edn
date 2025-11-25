@@ -1,16 +1,25 @@
 {:paths ["src" "resources" "target/classes"],
  :deps {riddley/riddley {:mvn/version "0.2.0"}},
  :aliases
- {:test
+ {:test/clj
   {:extra-paths ["test"]
    :extra-deps
    {io.github.seancorfield/test-runner {:git/tag "v0.6.0" :git/sha "d5f18c5"}
     collection-check/collection-check {:mvn/version "0.1.7"}
     org.clojure/test.check {:mvn/version "1.1.1"}
     criterium/criterium {:mvn/version "0.4.6"}}
-   :main-opts ["-m" "cognitect.test-runner" "--exclude" ":benchmark"
-               ]
-   :exec-fn cognitect.test-runner.api/test}
+   :main-opts ["-m" "cognitect.test-runner" "--exclude" ":benchmark"]}
+  :test/cljs
+  {:extra-paths ["test"]
+   :extra-deps
+   {org.clojure/clojurescript {:mvn/version "1.12.116"}
+    olical/cljs-test-runner {:mvn/version "3.8.1"}
+    io.github.seancorfield/test-runner {:git/tag "v0.6.0" :git/sha "d5f18c5"}
+    collection-check/collection-check {:mvn/version "0.1.7"}
+    org.clojure/test.check {:mvn/version "1.1.1"}
+    criterium/criterium {:mvn/version "0.4.6"}}
+   :main-opts ["-m" "cljs-test-runner.main" ;; "--exclude" ":benchmark"
+               ]}
   :lein2deps
   {:deps
    {io.github.borkdude/lein2deps

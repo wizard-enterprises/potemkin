@@ -1,12 +1,17 @@
 (ns potemkin.namespaces)
 
-(defn link-vars
-  "Makes sure that all changes to `src` are reflected in `dst`."
-  [src dst]
-  (add-watch src dst
-             (fn [_ src old new]
-               (alter-var-root dst (constantly @src))
-               (alter-meta! dst merge (dissoc (meta src) :name)))))
+#?(:clj
+   (defn link-vars
+     "Makes sure that all changes to `src` are reflected in `dst`."
+     [src dst]
+     (add-watch src dst
+                (fn [_ src old new]
+                  (alter-var-root dst (constantly @src))
+                  (alter-meta! dst merge (dissoc (meta src) :name))))))
+
+(defn- throw-illegal-argument [& msg]
+  #?(:clj  (throw (IllegalArgumentException. (apply str msg)))
+     :cljs (throw (ex-info (apply str "illegal argument: " msg) {}))))
 
 (defmacro import-fn
   "Given a function in another namespace, defines a function with the
@@ -21,15 +26,14 @@
          arglists (:arglists m)
          protocol (:protocol m)]
      (when-not vr
-       (throw (IllegalArgumentException. (str "Don't recognize " sym))))
+       (throw-illegal-argument "Don't recognize " sym))
      (when (:macro m)
-       (throw (IllegalArgumentException.
-               (str "Calling import-fn on a macro: " sym))))
+       (throw-illegal-argument "Calling import-fn on a macro: " sym))
 
      `(let [vr# (resolve '~sym)]
         (def ~(with-meta n {:protocol protocol}) (deref vr#))
         (alter-meta! (var ~n) merge (dissoc (meta vr#) :name))
-        (link-vars vr# (var ~n))
+        #?(:clj (link-vars vr# (var ~n)))
         vr#))))
 
 (defmacro import-macro
@@ -44,15 +48,14 @@
          n (or name (with-meta (:name m) {}))
          arglists (:arglists m)]
      (when-not vr
-       (throw (IllegalArgumentException. (str "Don't recognize " sym))))
+       (throw-illegal-argument "Don't recognize " sym))
      (when-not (:macro m)
-       (throw (IllegalArgumentException.
-               (str "Calling import-macro on a non-macro: " sym))))
+       (throw-illegal-argument "Calling import-macro on a non-macro: " sym))
      `(let [vr# (resolve '~sym)]
         (def ~n (deref vr#))
         (alter-meta! (var ~n) merge (dissoc (meta vr#) :name))
-        (.setMacro (var ~n))
-        (link-vars vr# (var ~n))
+        #?(:clj (.setMacro (var ~n)))
+        #?(:clj (link-vars vr# (var ~n)))
         vr#))))
 
 (defmacro import-def
@@ -67,11 +70,11 @@
          n (with-meta n (if (:dynamic m) {:dynamic true} {}))
          nspace (:ns m)]
      (when-not vr
-       (throw (IllegalArgumentException. (str "Don't recognize " sym))))
+       (throw-illegal-argument "Don't recognize " sym))
      `(let [vr# (resolve '~sym)]
         (def ~n (deref vr#))
         (alter-meta! (var ~n) merge (dissoc (meta vr#) :name))
-        (link-vars vr# (var ~n))
+        #?(:clj (link-vars vr# (var ~n)))
         vr#))))
 
 (defn- unravel* [x]

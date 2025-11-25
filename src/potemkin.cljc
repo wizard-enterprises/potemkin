@@ -1,8 +1,6 @@
 (ns potemkin
   (:require
     [potemkin.namespaces]
-    [potemkin.types]
-    [potemkin.collections]
     [potemkin.macros]
     [potemkin.utils]))
 
@@ -24,25 +22,5 @@
   [potemkin.utils
 
    condp-case
-   try*
-   fast-bound-fn
-   fast-bound-fn*
-   fast-memoize
    doit
-   doary]
-
-  [potemkin.types
-
-   def-abstract-type
-   reify+
-   defprotocol+
-   deftype+
-   defrecord+
-   definterface+
-   extend-protocol+]
-
-  [potemkin.collections
-
-   reify-map-type
-   def-derived-map
-   def-map-type])
+   doary])

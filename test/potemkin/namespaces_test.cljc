@@ -1,10 +1,11 @@
 (ns potemkin.namespaces-test
   (:require
+   #?(:clj [clojure.test :refer :all]
+      :cljs [cljs.test :refer :all :include-macros true])
    [clojure.repl :as repl :refer :all]
    [clojure.string :as str]
-   [clojure.test :refer :all]
-   [potemkin :refer :all]
-   [potemkin.imports-test :as i]))
+   [potemkin :refer :all :include-macros true]
+   [potemkin.imports-test :as i :include-macros true]))
 
 (import-macro i/multi-arity-macro)
 (import-macro i/multi-arity-macro alt-macro-name)

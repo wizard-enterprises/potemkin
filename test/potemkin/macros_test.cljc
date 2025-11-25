@@ -1,7 +1,8 @@
 (ns potemkin.macros-test
-  (:use
-    [clojure test]
-    [potemkin macros]))
+  (:require
+   #?(:clj [clojure.test :refer :all]
+      :cljs [cljs.test :refer :all :include-macros true])
+   [potemkin.macros :refer :all :include-macros true]))
 
 (defn simple-unify-form []
   (unify-gensyms
