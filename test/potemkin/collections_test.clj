@@ -1,9 +1,14 @@
 (ns potemkin.collections-test
   (:require
-    [collection-check :as check]
     [clojure.test :refer :all]
     [clojure.test.check.generators :as gen]
     [potemkin.collections :refer :all]))
+
+(try
+  (require '[collection-check :as check]) ;; works on lein and not clj
+  (catch Exception e
+    (require '[collection-check.core :as check]) ;; works on clj and not lein
+    ))
 
 (def-map-type SimpleMap [m mta]
   (get [_ k d] (get m k d))

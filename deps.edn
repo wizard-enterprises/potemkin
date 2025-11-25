@@ -1,0 +1,28 @@
+{:paths ["src" "resources" "target/classes"],
+ :deps {riddley/riddley {:mvn/version "0.2.0"}},
+ :aliases
+ {:test
+  {:extra-paths ["test"]
+   :extra-deps
+   {io.github.seancorfield/test-runner {:git/tag "v0.6.0" :git/sha "d5f18c5"}
+    collection-check/collection-check {:mvn/version "0.1.7"}
+    org.clojure/test.check {:mvn/version "1.1.1"}
+    criterium/criterium {:mvn/version "0.4.6"}}
+   :main-opts ["-m" "cognitect.test-runner" "--exclude" ":benchmark"
+               ]
+   :exec-fn cognitect.test-runner.api/test}
+  :lein2deps
+  {:deps
+   {io.github.borkdude/lein2deps
+    {:git/sha "1bcf2fbbcbef611381e5e9ccdc77bec1e62ea5e5"}},
+   :ns-default lein2deps.build,
+   :lein2deps/compile-java
+   {:src-dirs ["src"],
+    :class-dir "target/classes",
+    :javac-opts ["-source" "1.8" "-target" "1.8"]}}},
+ :deps/prep-lib
+ {:ensure "target/classes", :alias :lein2deps, :fn compile-java},
+ ;; :mvn/repos
+ ;; {"sonatype-oss-public"
+ ;;  "https://oss.sonatype.org/content/groups/public/"}
+ }
